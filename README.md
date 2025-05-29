@@ -1,5 +1,4 @@
-Tabii, işte istediğin şekilde temiz ve profesyonel bir **Proje Geliştirme Özeti** listesi ve önerilen ilk commit mesajı:
-
+ 
 ---
 
 ## Proje Geliştirme Özeti
