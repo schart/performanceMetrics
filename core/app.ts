@@ -25,7 +25,7 @@ export const sequelize = new Sequelize({
   models: [PerformanceMetric],
   logging: false, // LOGGER -> console.log()
 });
-
+//
 (async () => {
   try {
     await sequelize.authenticate();

@@ -21,16 +21,3 @@ Tabii, işte istediğin şekilde temiz ve profesyonel bir **Proje Geliştirme Ö
 - Proje GitHub ile versiyonlanıyor.
 
 ---
-
-```
-feat: Proje yapısı kuruldu, temel servisler ve filtreleme eklendi
-
-- Person ve Computer tabloları kaldırıldı
-- Repo, service, controller, mapper yapıları oluşturuldu
-- Tarih ve cihaz bazlı filtreleme desteklendi
-- Dakika bazlı kayıt kontrolü ve oluşturma mekanizması eklendi
-- Dinleme aralıkları .env üzerinden yönetiliyor
-- GitHub versiyon kontrolü yapılandırıldı
-```
-
----
