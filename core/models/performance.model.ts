@@ -1,26 +1,52 @@
-import {
-  Table,
-  Column,
-  Model,
-  CreatedAt,
-  PrimaryKey,
-} from "sequelize-typescript";
+import { Column, CreatedAt, Model, Table } from "sequelize-typescript";
 
 @Table
-export class PerformanceMetric extends Model {
+export class CpuMetrics extends Model {
   @Column
   computerId!: string;
 
   @Column
-  cpu!: string;
+  name!: string;
 
   @Column
-  ram!: string;
+  performance!: string;
 
-  @Column
-  disk!: string;
+  static deviceType = "cpu";
 
   @CreatedAt
   createdAt!: Date;
 }
-//
+
+@Table
+export class RamMetrics extends Model {
+  @Column
+  computerId!: string;
+
+  @Column
+  name!: string;
+
+  @Column
+  performance!: string;
+
+  static deviceType = "ram";
+
+  @CreatedAt
+  createdAt!: Date;
+}
+
+@Table
+export class DiskMetrics extends Model {
+  @Column
+  computerId!: string;
+
+  @Column
+  name!: string;
+
+  @Column
+  performance!: string;
+
+  static deviceType = "ram";
+
+  @CreatedAt
+  createdAt!: Date;
+}

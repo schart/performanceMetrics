@@ -2,7 +2,7 @@ import { Op } from "sequelize";
 import { performanceRepository } from "../repositories/performance.repository";
 
 export const performanceService = {
-  async getMetrics(
+  async getMetricsService(
     start?: string,
     end?: string,
     device?: string,
@@ -10,10 +10,10 @@ export const performanceService = {
     pageSize: number = 10
   ) {
     const filters: any = {};
-
     let startDate: Date | null = null;
     let endDate: Date | null = null;
 
+    // Start date parse & validation
     if (start) {
       startDate = new Date(start);
       if (isNaN(startDate.getTime())) {
@@ -23,6 +23,7 @@ export const performanceService = {
       }
     }
 
+    // End date parse & validation
     if (end) {
       endDate = new Date(end);
       if (isNaN(endDate.getTime())) {
@@ -32,6 +33,16 @@ export const performanceService = {
       }
     }
 
+    if (device) {
+      const targetModel = performanceRepository.findTargetModel(device);
+      if (!targetModel) {
+        throw new Error("Model not found.");
+      }
+    }
+
+    console.log("Device: ", device);
+
+    // Filter date range
     if (startDate && endDate) {
       filters.createdAt = { [Op.between]: [startDate, endDate] };
     } else if (startDate) {
@@ -39,91 +50,29 @@ export const performanceService = {
     } else if (endDate) {
       filters.createdAt = { [Op.lte]: endDate };
     }
-
-    if (device) {
-      const deviceLower = device.toLowerCase();
-
-      if (deviceLower === "cpu") {
-        filters.cpu = { [Op.ne]: null };
-      } else if (deviceLower === "disk") {
-        filters.disk = { [Op.ne]: null };
-      } else if (deviceLower === "ram") {
-        filters.ram = { [Op.ne]: null };
-      } else {
-        throw new Error("Invalid device type. Must be cpu, disk or ram.");
-      }
-    }
+    console.log("Filters: ", filters);
 
     const limit = pageSize;
     const offset = (page - 1) * pageSize;
 
-    return performanceRepository.getMetricsBetween(
-      filters,
-      { limit, offset },
-      device
-    );
+    return performanceRepository.findAll(filters, { limit, offset }, device);
   },
 
-  async getMetricDetailById(
-    computerId: string,
-    start?: string,
-    end?: string,
-    device?: string,
-    page: number = 1,
-    pageSize: number = 10
-  ) {
-    const filters: any = { computerId };
-
-    let startDate: Date | null = null;
-    let endDate: Date | null = null;
-
-    if (start) {
-      startDate = new Date(start);
-      if (isNaN(startDate.getTime())) {
-        throw new Error(
-          "Invalid start date format. Use ISO format or yyyy-mm-dd."
-        );
-      }
+  async getMetricsByIdService(computerId: string, device?: string) {
+    if (!computerId) {
+      throw new Error("computerId param is required.");
     }
 
-    if (end) {
-      endDate = new Date(end);
-      if (isNaN(endDate.getTime())) {
-        throw new Error(
-          "Invalid end date format. Use ISO format or yyyy-mm-dd."
-        );
-      }
+    if (device && !performanceRepository.findTargetModel(device)) {
+      throw new Error("Model not found for device: " + device);
     }
 
-    if (startDate && endDate) {
-      filters.createdAt = { [Op.between]: [startDate, endDate] };
-    } else if (startDate) {
-      filters.createdAt = { [Op.gte]: startDate };
-    } else if (endDate) {
-      filters.createdAt = { [Op.lte]: endDate };
+    const result = await performanceRepository.findById(computerId, device);
+
+    if (!result) {
+      throw new Error("Metric not found.");
     }
 
-    if (device) {
-      const deviceLower = device.toLowerCase();
-
-      if (deviceLower === "cpu") {
-        filters.cpu = { [Op.ne]: null };
-      } else if (deviceLower === "disk") {
-        filters.disk = { [Op.ne]: null };
-      } else if (deviceLower === "ram") {
-        filters.ram = { [Op.ne]: null };
-      } else {
-        throw new Error("Invalid device type. Must be cpu, disk or ram.");
-      }
-    }
-
-    const limit = pageSize;
-    const offset = (page - 1) * pageSize;
-
-    return performanceRepository.findByComputerIdWithFilters(filters, {
-      limit,
-      offset,
-    });
+    return result;
   },
 };
-//

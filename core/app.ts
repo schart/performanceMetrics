@@ -5,10 +5,14 @@ dotenv.config();
 import express from "express";
 import { DB_CONFIG } from "../config";
 import { Sequelize } from "sequelize-typescript";
-import { PerformanceMetric } from "./models/performance.model";
 import performanceMetricrouter from "./routers/performance.router";
 import { scheduleMetricRecorder } from "./crons/performanceRecord.cron";
 import { errorHandler } from "./middleware/generalErrorHandler.middleware";
+import {
+  CpuMetrics,
+  DiskMetrics,
+  RamMetrics,
+} from "./models/performance.model";
 
 const app = express();
 app.use(express.json());
@@ -22,7 +26,7 @@ export const sequelize = new Sequelize({
   host: DB_CONFIG.DB_HOST,
   port: DB_CONFIG.DB_PORT,
   dialect: "postgres",
-  models: [PerformanceMetric],
+  models: [CpuMetrics, RamMetrics, DiskMetrics],
   logging: false, // LOGGER -> console.log()
 });
 //
@@ -32,13 +36,12 @@ export const sequelize = new Sequelize({
     console.log("DB Connected");
 
     // Record performance metrics every 5 minutes
-    console.log("Starting *recording* all personal PCs...");
+    console.log("Cron job started for create");
     const cronRange = String(process.env.METRIC_LISTEN_RANGE);
-    console.log("cronRange: ", cronRange);
     scheduleMetricRecorder(cronRange);
 
     await sequelize.sync({ alter: true });
-    console.log("Models synchronized");
+    console.log("Models synchronized!");
   } catch (error) {
     console.error(error);
   }
