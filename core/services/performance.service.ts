@@ -1,6 +1,8 @@
 import { Op } from "sequelize";
 import { performanceRepository } from "../repositories/performance.repository";
+import { randomUUID } from "crypto";
 
+const pendingIds: Map<string, string> = new Map();
 export const performanceService = {
   async getMetricsService(
     start?: string,
@@ -74,5 +76,21 @@ export const performanceService = {
     }
 
     return result;
+  },
+
+  async generateId(): Promise<string> {
+    const placeholderId = randomUUID();
+
+    setTimeout(() => {
+      const actualId = randomUUID();
+      pendingIds.set(placeholderId, actualId);
+      console.log(`[generateAsyncId] Real id generated: ${actualId}`);
+    }, 5000);
+
+    return placeholderId;
+  },
+
+  getRealId(placeholderId: string): string | null {
+    return pendingIds.get(placeholderId) || null;
   },
 };
