@@ -15,6 +15,7 @@ import {
 } from "./models/performance.model";
 
 const app = express();
+
 app.use(express.json());
 app.use(errorHandler);
 app.use("/performance", performanceMetricrouter);

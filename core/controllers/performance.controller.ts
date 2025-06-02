@@ -71,21 +71,6 @@ class PerformanceMetricsController {
       return res.status(500).json({ error: "ID was not generated." });
     }
   }
-
-  async getActualId(req: Request, res: Response): Promise<any> {
-    try {
-      const { placeHolderId } = req.params;
-      const realId = performanceService.getRealId(placeHolderId);
-
-      if (!realId) {
-        return res.status(404).json({ message: "ID is not ready!" });
-      }
-
-      return res.status(200).json({ id: realId });
-    } catch (err) {
-      return res.status(500).json({ error: "Error when getting real id" });
-    }
-  }
 }
 
 export = new PerformanceMetricsController();

@@ -18,5 +18,4 @@ router.get(
 );
 
 router.get("/id/generate", PerformanceMetricsController.getAsyncId);
-router.get("/id/:placeHolderId", PerformanceMetricsController.getActualId);
 export default router;
