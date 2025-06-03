@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { performanceService } from "../services/performance.service";
-import { validateListPerformanceParams } from "../validations/performance.validation";
+import {
+  validateCreateUser,
+  validateListPerformanceParams,
+} from "../validations/performance.validation";
 
 class PerformanceMetricsController {
   async getAllMetrics(req: Request, res: Response): Promise<any> {
@@ -69,6 +72,23 @@ class PerformanceMetricsController {
       return res.status(200).json({ id });
     } catch (err) {
       return res.status(500).json({ error: "ID was not generated." });
+    }
+  }
+
+  async userCreate(req: Request, res: Response): Promise<any> {
+    const { error } = validateCreateUser(req.body);
+    if (error) {
+      const messages = error.details.map((d) => d.message).join(", ");
+      return res
+        .status(400)
+        .json({ error: "Validation Error", message: messages });
+    }
+
+    try {
+      await performanceService.createUserWithLogs(req.body);
+      return res.status(201).json({ message: "User created and logged." });
+    } catch (error: any) {
+      return res.status(500).json({ error: error.message });
     }
   }
 }

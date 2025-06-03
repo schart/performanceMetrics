@@ -1,6 +1,7 @@
 import { Op } from "sequelize";
 import { performanceRepository } from "../repositories/performance.repository";
 import { randomUUID } from "crypto";
+import { sequelize } from "../app";
 
 const idCache: string[] = [];
 const MAX_CACHE_SIZE = 100;
@@ -101,6 +102,26 @@ export const performanceService = {
     }
 
     return id;
+  },
+
+  /*
+   *  USER CREATE
+   */
+
+  async createUserWithLogs(data: any) {
+    const transaction = await sequelize.transaction();
+
+    try {
+      await performanceRepository.logIncomingRequest(data, transaction);
+
+      await performanceRepository.insertUser(data, transaction);
+
+      await transaction.commit();
+      return { success: true };
+    } catch (error) {
+      await transaction.rollback();
+      throw new Error("Transaction failed: " + (error as any).message);
+    }
   },
 };
 

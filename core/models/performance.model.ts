@@ -50,3 +50,25 @@ export class DiskMetrics extends Model {
   @CreatedAt
   createdAt!: Date;
 }
+
+@Table
+export class IncomingRequestLog extends Model {
+  @Column
+  payload!: string;
+
+  @CreatedAt
+  createdAt!: Date;
+}
+
+
+@Table
+export class Users extends Model {
+  @Column
+  operation!: string;
+
+  @Column
+  payload!: string;
+
+  @CreatedAt
+  createdAt!: Date;
+}

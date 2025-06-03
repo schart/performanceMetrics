@@ -11,7 +11,9 @@ import { errorHandler } from "./middleware/generalErrorHandler.middleware";
 import {
   CpuMetrics,
   DiskMetrics,
+  IncomingRequestLog,
   RamMetrics,
+  Users,
 } from "./models/performance.model";
 
 const app = express();
@@ -27,7 +29,7 @@ export const sequelize = new Sequelize({
   host: DB_CONFIG.DB_HOST,
   port: DB_CONFIG.DB_PORT,
   dialect: "postgres",
-  models: [CpuMetrics, RamMetrics, DiskMetrics],
+  models: [CpuMetrics, RamMetrics, DiskMetrics, Users, IncomingRequestLog],
   logging: false, // LOGGER -> console.log()
 });
 //

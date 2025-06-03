@@ -18,4 +18,6 @@ router.get(
 );
 
 router.get("/id/generate", PerformanceMetricsController.getAsyncId);
+router.post("/users", PerformanceMetricsController.userCreate);
+
 export default router;

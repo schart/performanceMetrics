@@ -1,10 +1,13 @@
 import {
   CpuMetrics,
   DiskMetrics,
+  IncomingRequestLog,
   RamMetrics,
+  Users,
 } from "../models/performance.model";
 import { sequelize } from "../app";
 import { randomUUID } from "crypto";
+import { timeStamp } from "console";
 
 export const performanceRepository = {
   create: async (_device: string) => {
@@ -81,5 +84,27 @@ export const performanceRepository = {
 
     console.log("[findById] targetModel not found for device:", deviceFilter);
     return null;
+  },
+
+  async logIncomingRequest(payload: any, transaction: any) {
+    payload.id = randomUUID();
+    payload.createAt = new Date().toISOString();
+
+    return IncomingRequestLog.create(
+      {
+        payload: JSON.stringify(payload),
+      },
+      { transaction }
+    );
+  },
+
+  async insertUser(payload: any, transaction: any) {
+    return Users.create(
+      {
+        operation: "INSERT",
+        payload: JSON.stringify(payload),
+      },
+      { transaction }
+    );
   },
 };
